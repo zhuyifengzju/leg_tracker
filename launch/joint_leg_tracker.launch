@@ -2,7 +2,7 @@
 <launch>
   <!-- params -->
   <param name="forest_file" value="$(find leg_tracker)/config/trained_leg_detector_res=0.33.yaml" />
-  <param name="scan_topic" value="/scan" />
+  <param name="scan_topic" value="/Cobot/Laser" />
   <param name="fixed_frame" value="/base_link"/>
   <param name="scan_frequency" value="10"/>  
   
