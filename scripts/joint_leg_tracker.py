@@ -8,6 +8,7 @@ from leg_tracker.msg import Person, PersonArray, Leg, LegArray
 # ROS messages
 from visualization_msgs.msg import Marker
 from sensor_msgs.msg import LaserScan
+from geometry_msgs.msg import PoseArray, Pose
 from nav_msgs.msg import OccupancyGrid
 
 # Standard python modules
@@ -195,6 +196,7 @@ class KalmanMultiTracker:
         self.people_detected_pub = rospy.Publisher('people_detected', PersonArray, queue_size=300)
         self.marker_pub = rospy.Publisher('visualization_marker', Marker, queue_size=300)
         self.non_leg_clusters_pub = rospy.Publisher('non_leg_clusters', LegArray, queue_size=300)
+        self.people_vel_tracked_pub =  rospy.Publisher('people_vel_tracked', PoseArray , queue_size=300)
 
         # ROS subscribers         
         self.detected_clusters_sub = rospy.Subscriber('detected_leg_clusters', LegArray, self.detected_clusters_callback)      
@@ -607,7 +609,11 @@ class KalmanMultiTracker:
         """        
         people_tracked_msg = PersonArray()
         people_tracked_msg.header.stamp = now
-        people_tracked_msg.header.frame_id = self.publish_people_frame        
+        people_tracked_msg.header.frame_id = self.publish_people_frame
+
+        people_vel_tracked_msg = PoseArray()
+        people_vel_tracked_msg.header.stamp = now
+        people_vel_tracked_msg.header.frame_id = self.publish_people_frame
         marker_id = 0
 
         # Make sure we can get the required transform first:
@@ -654,6 +660,15 @@ class KalmanMultiTracker:
                         new_person.id = person.id_num 
                         people_tracked_msg.people.append(new_person)
 
+                        new_pose = Pose()
+                        new_pose.position.x = ps.point.x
+                        new_pose.position.y = ps.point.y
+                        new_pose.orientation.x = person.vel_x
+                        new_pose.orientation.y = person.vel_y
+                        new_pose.orientation.z = person.id_num
+                        new_pose.orientation.w = 0.
+
+                        people_vel_tracked_msg.poses.append(new_pose)
                         # publish rviz markers       
                         # Cylinder for body 
                         marker = Marker()
@@ -754,7 +769,7 @@ class KalmanMultiTracker:
 
         # Publish people tracked message
         self.people_tracked_pub.publish(people_tracked_msg)            
-
+        self.people_vel_tracked_pub.publish(people_vel_tracked_msg)
 
 if __name__ == '__main__':
     rospy.init_node('multi_person_tracker', anonymous=True)
