@@ -196,7 +196,7 @@ class KalmanMultiTracker:
         self.people_detected_pub = rospy.Publisher('people_detected', PersonArray, queue_size=300)
         self.marker_pub = rospy.Publisher('visualization_marker', Marker, queue_size=300)
         self.non_leg_clusters_pub = rospy.Publisher('non_leg_clusters', LegArray, queue_size=300)
-        self.people_vel_tracked_pub =  rospy.Publisher('people_vel_tracked', PoseArray , queue_size=1)
+        self.people_vel_tracked_pub =  rospy.Publisher('people_vel_tracked', PoseArray , queue_size=3)
 
         # ROS subscribers         
         self.detected_clusters_sub = rospy.Subscriber('detected_leg_clusters', LegArray, self.detected_clusters_callback)      
