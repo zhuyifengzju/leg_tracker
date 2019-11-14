@@ -101,7 +101,7 @@ public:
     latest_scan_header_stamp_with_tf_available_ = ros::Time::now();
 
     // ROS subscribers + publishers
-    scan_sub_ =  nh_.subscribe(scan_topic, 10, &DetectLegClusters::laserCallback, this);
+    scan_sub_ =  nh_.subscribe(scan_topic, 1, &DetectLegClusters::laserCallback, this);
     markers_pub_ = nh_.advertise<visualization_msgs::Marker>("visualization_marker", 1);
     detected_leg_clusters_pub_ = nh_.advertise<leg_tracker::LegArray>("detected_leg_clusters", 1);
   }
