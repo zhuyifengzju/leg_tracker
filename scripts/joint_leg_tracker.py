@@ -71,7 +71,7 @@ class ObjectTracked:
         # A better method would be to use data-driven EM find the params. 
         # The important part is that the observations are "weighted" higher than the motion model 
         # because they're more trustworthy and the motion model kinda sucks
-        scan_frequency = rospy.get_param("scan_frequency", 7.5)
+        scan_frequency = rospy.get_param("scan_frequency", 25)
         delta_t = 1./scan_frequency
         if scan_frequency > 7.49 and scan_frequency < 7.51:
             std_process_noise = 0.06666
@@ -79,6 +79,8 @@ class ObjectTracked:
             std_process_noise = 0.05
         elif scan_frequency > 14.99 and scan_frequency < 15.01:
             std_process_noise = 0.03333
+        elif scan_frequency > 24.99 and scan_frequency < 25.01:
+            std_process_noise = 0.1
         else:
             print "Scan frequency needs to be either 7.5, 10 or 15 or the standard deviation of the process noise needs to be tuned to your scanner frequency"
         std_pos = std_process_noise
@@ -182,7 +184,7 @@ class KalmanMultiTracker:
         self.publish_detected_people = rospy.get_param("display_detected_people", False)        
         self.dist_travelled_together_to_initiate_leg_pair = rospy.get_param("dist_travelled_together_to_initiate_leg_pair", 0.5)
         scan_topic = rospy.get_param("scan_topic", "scan");
-        self.scan_frequency = rospy.get_param("scan_frequency", 7.5)
+        self.scan_frequency = rospy.get_param("scan_frequency", 25)
         self.in_free_space_threshold = rospy.get_param("in_free_space_threshold", 0.06)
         self.confidence_percentile = rospy.get_param("confidence_percentile", 0.90)
         self.max_std = rospy.get_param("max_std", 0.9)
