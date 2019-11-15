@@ -24,7 +24,7 @@ import copy
 import timeit
 import message_filters
 import sys
-
+import time
 # External modules
 from pykalman import KalmanFilter # To install: http://pykalman.github.io/#installation
 
@@ -173,6 +173,8 @@ class KalmanMultiTracker:
         self.local_map = None
         self.new_local_map_received = True
         random.seed(1) 
+        self._last_time = time.time()
+        self._curr_time = time.time()
 
         # Get ROS params
         self.fixed_frame = rospy.get_param("fixed_frame", "odom")
@@ -608,7 +610,8 @@ class KalmanMultiTracker:
     def publish_tracked_people(self, now):
         """
         Publish markers of tracked people to Rviz and to <people_tracked> topic
-        """        
+        """
+        self._curr_time = time.time()
         people_tracked_msg = PersonArray()
         people_tracked_msg.header.stamp = now
         people_tracked_msg.header.frame_id = self.publish_people_frame
@@ -772,7 +775,8 @@ class KalmanMultiTracker:
         # Publish people tracked message
         self.people_tracked_pub.publish(people_tracked_msg)            
         self.people_vel_tracked_pub.publish(people_vel_tracked_msg)
-
+        print("Time: ", self._curr_time - self._last_time)
+        self._last_time = self._curr_time
 if __name__ == '__main__':
     rospy.init_node('multi_person_tracker', anonymous=True)
     kmt = KalmanMultiTracker()
