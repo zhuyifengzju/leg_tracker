@@ -194,15 +194,15 @@ class KalmanMultiTracker:
         self.latest_scan_header_stamp_with_tf_available = rospy.get_rostime()
 
     	# ROS publishers
-        self.people_tracked_pub = rospy.Publisher('people_tracked', PersonArray, queue_size=300)
-        self.people_detected_pub = rospy.Publisher('people_detected', PersonArray, queue_size=300)
+        self.people_tracked_pub = rospy.Publisher('people_tracked', PersonArray, queue_size=1)
+        self.people_detected_pub = rospy.Publisher('people_detected', PersonArray, queue_size=1)
         self.marker_pub = rospy.Publisher('visualization_marker', Marker, queue_size=300)
-        self.non_leg_clusters_pub = rospy.Publisher('non_leg_clusters', LegArray, queue_size=300)
-        self.people_vel_tracked_pub =  rospy.Publisher('people_vel_tracked', PoseArray , queue_size=3)
+        self.non_leg_clusters_pub = rospy.Publisher('non_leg_clusters', LegArray, queue_size=1)
+        self.people_vel_tracked_pub =  rospy.Publisher('people_vel_tracked', PoseArray , queue_size=1)
 
         # ROS subscribers         
-        self.detected_clusters_sub = rospy.Subscriber('detected_leg_clusters', LegArray, self.detected_clusters_callback)      
-        self.local_map_sub = rospy.Subscriber('local_map', OccupancyGrid, self.local_map_callback)
+        self.detected_clusters_sub = rospy.Subscriber('detected_leg_clusters', LegArray, self.detected_clusters_callback, queue_size=1)      
+        self.local_map_sub = rospy.Subscriber('local_map', OccupancyGrid, self.local_map_callback, queue_size=1)
 
         rospy.spin() # So the node doesn't immediately shut down
                     
